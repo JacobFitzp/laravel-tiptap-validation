@@ -1,22 +1,22 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "jacobfitzp/laravel-tiptap-validation",
+    "description": "This is my package laravel-tiptap-validation",
     "keywords": [
-        ":vendor_name",
+        "JacobFitzp",
         "laravel",
-        ":package_slug"
+        "laravel-tiptap-validation"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/jacobfitzp/laravel-tiptap-validation",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Jacob Fitzpatrick",
+            "email": "contact@jacobfitzp.me",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.1",
+        "php": "^8.2",
         "spatie/laravel-package-tools": "^1.14.0",
         "illuminate/contracts": "^10.0"
     },
@@ -24,7 +24,7 @@
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^7.9",
         "nunomaduro/larastan": "^2.0.1",
-        "orchestra/testbench": "^8.0",
+        "orchestra/testbench": "^8.4",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
@@ -35,20 +35,20 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "JacobFitzp\\LaravelTiptapValidation\\": "src/",
+            "JacobFitzp\\LaravelTiptapValidation\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "JacobFitzp\\LaravelTiptapValidation\\Tests\\": "tests/"
         }
     },
     "scripts": {
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
-        "test": "vendor/bin/pest",
-        "test-coverage": "vendor/bin/pest --coverage",
+        "test": "vendor/bin/phpunit",
+        "test-coverage": "vendor/bin/phpunit --coverage",
         "format": "vendor/bin/pint"
     },
     "config": {
@@ -61,10 +61,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "JacobFitzp\\LaravelTiptapValidation\\LaravelTiptapValidationServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "LaravelTiptapValidation": "JacobFitzp\\LaravelTiptapValidation\\Facades\\LaravelTiptapValidation"
             }
         }
     },
