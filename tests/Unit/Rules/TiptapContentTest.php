@@ -4,10 +4,10 @@ namespace JacobFitzp\LaravelTiptapValidation\Tests\Unit\Rules;
 
 use Generator;
 use Illuminate\Support\Facades\Validator;
-use JacobFitzp\LaravelTiptapValidation\Rules\TiptapValidationRule;
+use JacobFitzp\LaravelTiptapValidation\Rules\TiptapContent;
 use JacobFitzp\LaravelTiptapValidation\Tests\TestCase;
 
-class TiptapValidationRuleTest extends TestCase
+class TiptapContentTest extends TestCase
 {
     /**
      * @dataProvider validationTestCases
@@ -17,10 +17,17 @@ class TiptapValidationRuleTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapValidationRule::create(),
+            'content' => TiptapContent::create(),
         ]);
 
         $this->assertSame($passes, $validator->passes());
+
+        if (! $passes) {
+            $this->assertSame(
+                'Invalid Tiptap content',
+                $validator->messages()->get('content')[0]
+            );
+        }
     }
 
     /**
@@ -31,7 +38,7 @@ class TiptapValidationRuleTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapValidationRule::create()
+            'content' => TiptapContent::create()
                 ->blacklist()
                 ->nodes(...$nodes)
                 ->marks(...$marks),
@@ -48,7 +55,7 @@ class TiptapValidationRuleTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapValidationRule::create()
+            'content' => TiptapContent::create()
                 ->whitelist()
                 ->nodes(...$nodes)
                 ->marks(...$marks),

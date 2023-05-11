@@ -7,7 +7,7 @@ use Exception;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use JacobFitzp\LaravelTiptapValidation\Concerns\Configurable;
+use JacobFitzp\LaravelTiptapValidation\Concerns\Creatable;
 use JacobFitzp\LaravelTiptapValidation\Enums\TiptapValidationRuleMode;
 use RuntimeException;
 
@@ -16,14 +16,75 @@ use RuntimeException;
  *
  * @author Jacob Fitzpatrick <contact@jacobfitzp.me>
  */
-class TiptapValidationRule implements ValidationRule
+class TiptapContent implements ValidationRule
 {
-    use Configurable;
+    use Creatable;
 
     /**
      * Validation failed.
      */
     protected bool $fails = false;
+
+    /**
+     * List of allowed / disallowed node types.
+     */
+    protected array $nodes = [];
+
+    /**
+     * List of allowed / disallowed mark types.
+     *
+     * @var string[]
+     */
+    protected array $marks = [];
+
+    /**
+     * Mode used for validation, blacklist, or whitelist.
+     */
+    protected TiptapValidationRuleMode $mode = TiptapValidationRuleMode::BLACKLIST;
+
+    /**
+     * Nodes to blacklist / whitelist
+     *
+     * @param  mixed  ...$nodes
+     */
+    public function nodes(...$nodes): TiptapContent
+    {
+        $this->nodes = $nodes;
+
+        return $this;
+    }
+
+    /**
+     * Marks to blacklist / whitelist
+     *
+     * @param  mixed  ...$marks
+     */
+    public function marks(...$marks): TiptapContent
+    {
+        $this->marks = $marks;
+
+        return $this;
+    }
+
+    /**
+     * Enable whitelisting mode
+     */
+    public function whitelist(): TiptapContent
+    {
+        $this->mode = TiptapValidationRuleMode::WHITELIST;
+
+        return $this;
+    }
+
+    /**
+     * Enable blacklisting mode
+     */
+    public function blacklist(): TiptapContent
+    {
+        $this->mode = TiptapValidationRuleMode::BLACKLIST;
+
+        return $this;
+    }
 
     /**
      * Validate Tiptap content.
@@ -44,7 +105,7 @@ class TiptapValidationRule implements ValidationRule
                     throw new RuntimeException();
                 }
             } catch (Exception $exception) {
-                $fail('Invalid Tiptap content');
+                $fail(trans('tiptap-validation::messages.tiptapContent'));
 
                 return;
             }
@@ -57,7 +118,7 @@ class TiptapValidationRule implements ValidationRule
         ]);
 
         if ($validator->fails()) {
-            $fail('Invalid Tiptap content');
+            $fail(trans('tiptap-validation::messages.tiptapContent'));
 
             return;
         }
@@ -69,7 +130,7 @@ class TiptapValidationRule implements ValidationRule
 
         // Content validation failed
         if ($this->fails) {
-            $fail('Invalid Tiptap content');
+            $fail(trans('tiptap-validation::messages.tiptapContent'));
         }
     }
 
@@ -81,11 +142,8 @@ class TiptapValidationRule implements ValidationRule
         // Validate node types
         $validator = Validator::make($nodes, [
             '*.type' => ['required', 'string', $this->typeValidationRule($this->nodes)],
-            '*.marks' => 'array',
             '*.marks.*.type' => ['required', 'string',  $this->typeValidationRule($this->marks)],
-            '*.marks.*.text' => 'string',
-            '*.content' => 'array',
-            '*.text' => 'string',
+            '*' => new TiptapNode(),
         ]);
 
         if ($validator->fails()) {
@@ -124,13 +182,5 @@ class TiptapValidationRule implements ValidationRule
         $this->fails = true;
 
         return false;
-    }
-
-    /**
-     * Create rule instance.
-     */
-    public static function create(): TiptapValidationRule
-    {
-        return new self();
     }
 }

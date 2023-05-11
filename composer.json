@@ -59,7 +59,14 @@
         }
     },
     "extra": {
-        "laravel": {}
+        "laravel": {
+            "providers": [
+                "JacobFitzp\\LaravelTiptapValidation\\TiptapValidationServiceProvider"
+            ],
+            "aliases": {
+                "TiptapValidation": "JacobFitzp\\LaravelTiptapValidation\\Facades\\TiptapValidation"
+            }
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
