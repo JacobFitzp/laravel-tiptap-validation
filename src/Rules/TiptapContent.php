@@ -149,6 +149,7 @@ class TiptapContent implements ValidationRule
                     ! $this->validateNodes($node['content'])
                 ) {
                     $passes = false;
+
                     return false;
                 }
             });
