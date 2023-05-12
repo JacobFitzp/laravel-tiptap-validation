@@ -3,13 +3,12 @@
 namespace JacobFitzp\LaravelTiptapValidation\Rules;
 
 use Closure;
-use Exception;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use JacobFitzp\LaravelTiptapValidation\Concerns\Creatable;
 use JacobFitzp\LaravelTiptapValidation\Enums\TiptapValidationRuleMode;
-use RuntimeException;
+use JacobFitzp\LaravelTiptapValidation\Helpers\TiptapContentHelper;
 
 /**
  * Tiptap content validation rule
@@ -96,26 +95,18 @@ class TiptapContent implements ValidationRule
             return;
         }
 
-        // Attempt to decode json from string
-        if (! is_array($value)) {
-            try {
-                $value = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
-                // Decoding was unsuccessful
-                if (empty($value) || ! is_array($value)) {
-                    throw new RuntimeException();
-                }
-            } catch (Exception $exception) {
-                $fail(trans('tiptap-validation::messages.tiptapContent'));
+        // Attempt to decode content
+        $value = TiptapContentHelper::attemptDecode($value);
 
-                return;
-            }
+        // Unable to decode content, invalid format
+        if (is_null($value)) {
+            $fail(trans('tiptap-validation::messages.tiptapContent'));
+
+            return;
         }
 
         // Validate root tiptap content.
-        $validator = Validator::make($value, [
-            'type' => 'required|string',
-            'content' => 'array',
-        ]);
+        $validator = Validator::make($value, ['type' => 'required|string', 'content' => 'array']);
 
         if ($validator->fails()) {
             $fail(trans('tiptap-validation::messages.tiptapContent'));
@@ -124,12 +115,10 @@ class TiptapContent implements ValidationRule
         }
 
         // Begin content validation
-        if (! empty($value['content'])) {
-            $this->validateNodes($value['content']);
-        }
-
-        // Content validation failed
-        if ($this->fails) {
+        if (
+            ! empty($value['content']) &&
+            ! $this->validateNodes($value['content'])
+        ) {
             $fail(trans('tiptap-validation::messages.tiptapContent'));
         }
     }
@@ -147,18 +136,24 @@ class TiptapContent implements ValidationRule
         ]);
 
         if ($validator->fails()) {
-            return $this->fail();
+            return false;
         }
+
+        $passes = true;
 
         // Validate nested content
         collect($nodes)
-            ->each(function (array $node) {
-                if (! empty($node['content'])) {
-                    $this->validateNodes($node['content']);
+            ->each(function (array $node) use (&$passes) {
+                if (
+                    ! empty($node['content']) &&
+                    ! $this->validateNodes($node['content'])
+                ) {
+                    $passes = false;
+                    return false;
                 }
             });
 
-        return true;
+        return $passes;
     }
 
     /**
@@ -170,17 +165,5 @@ class TiptapContent implements ValidationRule
             TiptapValidationRuleMode::WHITELIST => Rule::in($types),
             default => Rule::notIn($types),
         };
-    }
-
-    /**
-     * Fail validation
-     *
-     * @return false
-     */
-    protected function fail(): bool
-    {
-        $this->fails = true;
-
-        return false;
     }
 }

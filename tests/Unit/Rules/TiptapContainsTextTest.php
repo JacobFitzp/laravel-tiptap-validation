@@ -11,7 +11,7 @@ class TiptapContainsTextTest extends TestCase
     /**
      * @dataProvider contentContainsTextTestCases
      */
-    public function test_it_validates_content_contains_text(array $content, bool $passes): void
+    public function test_it_validates_content_contains_text(mixed $content, bool $passes): void
     {
         $validator = Validator::make([
             'content' => $content,
@@ -84,6 +84,10 @@ class TiptapContainsTextTest extends TestCase
 
     public static function contentContainsTextTestCases(): \Generator
     {
+        yield [false, false];
+        yield [null, false];
+        yield [[], false];
+
         yield [
             [
                 'type' => 'document',

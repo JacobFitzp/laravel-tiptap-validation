@@ -5,6 +5,7 @@ namespace JacobFitzp\LaravelTiptapValidation\Rules;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use JacobFitzp\LaravelTiptapValidation\Concerns\Creatable;
+use JacobFitzp\LaravelTiptapValidation\Helpers\TiptapContentHelper;
 use JacobFitzp\LaravelTiptapValidation\Helpers\TiptapTextHelper;
 
 /**
@@ -61,6 +62,15 @@ class TiptapContainsText implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
+        $value = TiptapContentHelper::attemptDecode($value);
+
+        // Invalid content
+        if (empty($value) || !is_array($value)) {
+            $fail(trans('tiptap-validation::messages.tiptapContainsText.noText'));
+
+            return;
+        }
+
         // Count text characters in content
         $length = TiptapTextHelper::countCharacters($value['content'] ?? []);
 

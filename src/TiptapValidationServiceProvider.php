@@ -11,6 +11,7 @@ class TiptapValidationServiceProvider extends PackageServiceProvider
     {
         $package
             ->name('tiptap-validation')
-            ->hasTranslations();
+            ->hasTranslations()
+            ->hasConfigFile();
     }
 }
