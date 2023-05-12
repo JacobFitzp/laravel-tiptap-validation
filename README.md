@@ -46,7 +46,7 @@ JacobFitzp\LaravelTiptapValidation\TiptapValidationServiceProvider::class
 
 The `TiptapContent` rule is used to validate the basic structure and format, as well as limit what nodes and marks are allowed.
 
-Simply call `TiptapContent::create()` within your rules.
+Simply call `TiptapValidation::content()` within your rules.
 
 ```php
 Validator::make($data, [
@@ -131,7 +131,7 @@ First publish the translation files:
 php artisan vendor:publish --provider="JacobFitzp\LaravelTiptapValidation\TiptapValidationServiceProvider" --tag="tiptap-validation-translations"
 ```
 
-And then you can configure the error messages in `resources/lang/vendor/tiptap-validation/messages.php`
+And then you can configure the error messages in `lang/vendor/tiptap-validation/messages.php`
 
 ## Testing
 
