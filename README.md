@@ -1,5 +1,7 @@
 # Laravel Tiptap validation
 
+<img src="https://banners.beyondco.de/Laravel%20Tiptap%20validation.png?theme=light&packageManager=composer+require&packageName=jacobfitzp%2Flaravel-tiptap-validation&pattern=architect&style=style_1&description=Back-end+Tiptap+editor+validation+rules&md=1&showWatermark=0&fontSize=75px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg" />
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/jacobfitzp/laravel-tiptap-validation.svg?style=flat-square)](https://packagist.org/packages/jacobfitzp/laravel-tiptap-validation)
 [![GitHub Tests Action Status](https://img.shields.io/github/actions/workflow/status/jacobfitzp/laravel-tiptap-validation/run-tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/jacobfitzp/laravel-tiptap-validation/actions?query=workflow%3Arun-tests+branch%3Amain)
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/jacobfitzp/laravel-tiptap-validation/fix-php-code-style-issues.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/jacobfitzp/laravel-tiptap-validation/actions?query=workflow%3A"Fix+PHP+code+style+issues"+branch%3Amain)
