@@ -26,7 +26,7 @@ class TiptapNodeTest extends TestCase
     {
         yield [
             [],
-            false
+            false,
         ];
 
         yield [
@@ -34,7 +34,7 @@ class TiptapNodeTest extends TestCase
                 'type' => 'test',
                 'text' => 'blah',
             ],
-            true
+            true,
         ];
 
         yield [
@@ -50,7 +50,7 @@ class TiptapNodeTest extends TestCase
                 'type' => 'test',
                 'marks' => 'test',
             ],
-            false
+            false,
         ];
     }
 }

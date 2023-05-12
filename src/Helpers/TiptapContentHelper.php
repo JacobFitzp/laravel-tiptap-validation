@@ -16,7 +16,7 @@ class TiptapContentHelper
             try {
                 $value = json_decode($value, true, 512, JSON_THROW_ON_ERROR);
 
-                if (!empty($value) && is_array($value)) {
+                if (! empty($value) && is_array($value)) {
                     return $value;
                 }
             } catch (\Exception $exception) {
