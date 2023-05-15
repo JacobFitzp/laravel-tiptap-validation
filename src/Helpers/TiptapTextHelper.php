@@ -14,15 +14,15 @@ class TiptapTextHelper
                 $characters += strlen($node[$textProperty] ?? '');
             }
 
-            foreach ($node['marks'] ?? [] as $mark) {
+            foreach (array_get($node, 'marks', []) as $mark) {
                 foreach ($textProperties as $textProperty) {
                     $characters += strlen($mark[$textProperty] ?? '');
                 }
             }
 
             // Nested content
-            if (! empty($node['content'])) {
-                $characters += self::countCharacters($node['content']);
+            if (filled(array_get($node, 'content'))) {
+                $characters += self::countCharacters(array_get($node, 'content'));
             }
         }
 

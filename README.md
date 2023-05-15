@@ -35,54 +35,52 @@ You can install the package via composer:
 composer require jacobfitzp/laravel-tiptap-validation
 ```
 
-And then add the below service provider to `config/app.php`
+And then add the service provider to `config/app.php`
 ```php
-JacobFitzp\LaravelTiptapValidation\TiptapValidationServiceProvider::class
+JacobFitzp\LaravelTiptapValidation\TiptapValidationServiceProvider::class,
 ```
 
 ## Usage
 
-### TiptapContent
+### Content
 
 The `TiptapContent` rule is used to validate the basic structure and format, as well as limit what nodes and marks are allowed.
 
 Simply call `TiptapValidation::content()` within your rules.
 
 ```php
-Validator::make($data, [
-    'content' => TiptapValidation::content(),
-])
+TiptapValidation::content()
 ```
 
-You can also specify the nodes and marks you want to whitelist or blacklist:
+<details>
+  <summary>Blacklisting</summary>
 
-#### Blacklist nodes / marks
+Only nodes and marks which are not specified in the blacklist will be allowed, anything else will fail validation.
 
 ```php
-Validator::make($data, [
-    'content' => TiptapValidation::content()
-        ->blacklist()
-        // The node types you want to blacklist
-        ->nodes([ ... ])
-        // The mark types you want to blacklist
-        ->marks([ ... ]),
-])
+TiptapValidation::content()
+    ->blacklist()
+    ->nodes('orderedList', 'listItem')
+    ->marks('italic', 'link')
 ```
+</details>
 
-#### Whitelist nodes / marks
+
+<details>
+  <summary>Whitelisting</summary>
+
+Only specified nodes and marks are allowed, anything not in the whitelist will fail validation.
 
 ```php
-Validator::make($data, [
-    'content' => TiptapValidation::content()
-        ->whitelist()
-        // The node types you want to whitelist
-        ->nodes([ ... ])
-        // The mark types you want to whitelist
-        ->marks([ ... ]),
-])
+TiptapValidation::content()
+    ->whitelist()
+    ->nodes('text', 'paragraph')
+    ->marks('bold')
 ```
+</details>
 
-####  Extension
+<details>
+  <summary>Extension</summary>
 
 Instead of having to configure the rule each time, you can create an extension that has your default preferences set.
 
@@ -90,9 +88,7 @@ Instead of having to configure the rule each time, you can create an extension t
 class MyCustomTiptapValidationRule extends TiptapContent
 {
     protected TiptapValidationRuleMode $mode = TiptapValidationRuleMode::WHITELIST;
-    
     protected array $nodes = ['text', 'paragraph', 'table'];
-    
     protected array $marks = ['italic', 'link'];
 }
 ```
@@ -100,25 +96,19 @@ class MyCustomTiptapValidationRule extends TiptapContent
 This can then be used without the need for further configuration:
 
 ```php
-Validator::make($data, [
-    'content' => MyCustomTiptapValidationRule::create(),
-])
+MyCustomTiptapValidationRule::create(),
 ```
+</details>
 
-### TiptapContainsText 
+### Contains Text 
 
 The `TiptapContainsText` rule is used for verifying that the content contains text, and meets an optional character count requirements.
 
 ```php
-Validator::make($data, [
-    'content' => TiptapValidation::containsText()
-        // Minimum character requirement
-        ->minimum(12)
-        // Maximum character requirement
-        ->maximum(156)
-        // Minimum and maximum character requirement
-        ->between(12, 156),
-])
+TiptapValidation::containsText()
+    ->minimum(12) // Minimum character requirement
+    ->maximum(156) // Maximum character requirement
+    ->between(12, 156) // Minimum and maximum character requirement
 ```
 
 ### Configuration

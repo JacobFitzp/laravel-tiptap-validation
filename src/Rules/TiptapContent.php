@@ -91,7 +91,7 @@ class TiptapContent implements ValidationRule
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         // Skip empty values
-        if (empty($value)) {
+        if (blank($value)) {
             return;
         }
 
@@ -116,8 +116,8 @@ class TiptapContent implements ValidationRule
 
         // Begin content validation
         if (
-            ! empty($value['content']) &&
-            ! $this->validateNodes($value['content'])
+            filled(array_get($value, 'content')) &&
+            ! $this->validateNodes(array_get($value, 'content'))
         ) {
             $fail(trans('tiptap-validation::messages.tiptapContent'));
         }
@@ -145,13 +145,15 @@ class TiptapContent implements ValidationRule
         collect($nodes)
             ->each(function (array $node) use (&$passes) {
                 if (
-                    ! empty($node['content']) &&
-                    ! $this->validateNodes($node['content'])
+                    filled(array_get($node, 'content')) &&
+                    ! $this->validateNodes(array_get($node, 'content'))
                 ) {
                     $passes = false;
 
                     return false;
                 }
+
+                return true;
             });
 
         return $passes;

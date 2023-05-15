@@ -65,14 +65,14 @@ class TiptapContainsText implements ValidationRule
         $value = TiptapContentHelper::attemptDecode($value);
 
         // Invalid content
-        if (empty($value) || ! is_array($value)) {
+        if (! is_array($value) || blank($value)) {
             $fail(trans('tiptap-validation::messages.tiptapContainsText.noText'));
 
             return;
         }
 
         // Count text characters in content
-        $length = TiptapTextHelper::countCharacters($value['content'] ?? []);
+        $length = TiptapTextHelper::countCharacters(array_get($value, 'content', []));
 
         // No text found
         if ($length === 0) {

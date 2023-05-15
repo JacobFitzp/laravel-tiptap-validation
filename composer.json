@@ -17,6 +17,7 @@
     ],
     "require": {
         "php": "^8.1",
+        "laravel/helpers": "^1.6",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
