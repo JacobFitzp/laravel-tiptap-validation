@@ -2,6 +2,11 @@
 
 All notable changes to `laravel-tiptap-validation` will be documented in this file.
 
+## 1.1.2 - 2023-05-15
+
+- Use `blank` and `filled` instead of `empty`
+- Tidy up README
+
 ## 1.1.1 - 2023-05-12
 
 - Performance improvements (recursive validation is stopped when it comes accross a failure)
