@@ -2,6 +2,12 @@
 
 All notable changes to `laravel-tiptap-validation` will be documented in this file.
 
+## 1.1.1 - 2023-05-12
+
+- Performance improvements (recursive validation is stopped when it comes accross a failure)
+- Add config file and move over some parameters
+- Add additional tests
+
 ## 1.1.0 - 2023-05-11
 
 - Add `TiptapContainsText` rule
