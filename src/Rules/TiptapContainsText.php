@@ -3,19 +3,23 @@
 namespace JacobFitzp\LaravelTiptapValidation\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use JacobFitzp\LaravelTiptapValidation\Concerns\Creatable;
-use JacobFitzp\LaravelTiptapValidation\Helpers\TiptapContentHelper;
+use JacobFitzp\LaravelTiptapValidation\Concerns\DecodesTiptapContent;
+use JacobFitzp\LaravelTiptapValidation\Contracts\TiptapRule;
 use JacobFitzp\LaravelTiptapValidation\Helpers\TiptapTextHelper;
 
 /**
- * Validate Tiptap content contains text.
+ * Tiptap contains text validation rule.
+ *
+ * Validates that tiptap content contains text, and is within an
+ * option character count range.
  *
  * @author Jacob Fitzpatrick <contact@jacobfitzp.me>
  */
-class TiptapContainsText implements ValidationRule
+class TiptapContainsText implements TiptapRule
 {
     use Creatable;
+    use DecodesTiptapContent;
 
     protected ?int $minimum = null;
 
@@ -62,7 +66,7 @@ class TiptapContainsText implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $value = TiptapContentHelper::attemptDecode($value);
+        $value = $this->decode($value);
 
         // Invalid content
         if (! is_array($value) || blank($value)) {
@@ -81,7 +85,7 @@ class TiptapContainsText implements ValidationRule
             return;
         }
 
-        // Between minimum and maximum thresholds
+        // Out-of-range of character thresholds
         if (
             ! is_null($this->minimum) &&
             ! is_null($this->maximum) && (
@@ -97,7 +101,7 @@ class TiptapContainsText implements ValidationRule
             return;
         }
 
-        // Below minimum threshold
+        // Below minimum character count threshold
         if (! is_null($this->minimum) && $length < $this->minimum) {
             $fail(trans('tiptap-validation::messages.tiptapContainsText.minimumChars', [
                 'min' => $this->minimum,
@@ -106,7 +110,7 @@ class TiptapContainsText implements ValidationRule
             return;
         }
 
-        // Above maximum threshold
+        // Above maximum character count threshold
         if (! is_null($this->maximum) && $length > $this->maximum) {
             $fail(trans('tiptap-validation::messages.tiptapContainsText.maximumChars', [
                 'max' => $this->maximum,

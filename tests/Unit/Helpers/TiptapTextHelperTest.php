@@ -17,17 +17,22 @@ class TiptapTextHelperTest extends TestCase
 
     public static function characterCountTestCases(): \Generator
     {
-        yield [
+        yield 'testing' => [
             [
                 'text' => 'testing',
             ],
             7,
         ];
 
-        yield [
+        yield 'blank' => [
+            [],
+            0,
+        ];
+
+        yield 'testing + hobnob' => [
             [
                 'text' => 'testing',
-                'content' => [
+                'marks' => [
                     [
                         'text' => 'hobnob',
                     ],
@@ -36,17 +41,12 @@ class TiptapTextHelperTest extends TestCase
             13,
         ];
 
-        yield [
-            [],
-            0,
-        ];
-
-        yield [
+        yield 'ignores whitespace' => [
             [
-                'text' => 'testing',
+                'text' => 'testing   ',
                 'marks' => [
                     [
-                        'text' => 'hobnob',
+                        'text' => '    ho bno b',
                     ],
                 ],
             ],

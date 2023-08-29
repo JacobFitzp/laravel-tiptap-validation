@@ -54,8 +54,7 @@ Simply call `TiptapValidation::content()` within your rules.
 TiptapValidation::content()
 ```
 
-<details>
-  <summary>Blacklisting</summary>
+#### Blacklisting
 
 Only nodes and marks which are not specified in the blacklist will be allowed, anything else will fail validation.
 
@@ -65,11 +64,8 @@ TiptapValidation::content()
     ->nodes('orderedList', 'listItem')
     ->marks('italic', 'link')
 ```
-</details>
 
-
-<details>
-  <summary>Whitelisting</summary>
+#### Whitelisting
 
 Only specified nodes and marks are allowed, anything not in the whitelist will fail validation.
 
@@ -79,12 +75,10 @@ TiptapValidation::content()
     ->nodes('text', 'paragraph')
     ->marks('bold')
 ```
-</details>
 
-<details>
-  <summary>Extension</summary>
+#### Extension
 
-Instead of having to configure the rule each time, you can create an extension that has your default preferences set.
+Instead of having to configure the rule each time, you could simply create an extension that has your default preferences set.
 
 ```php
 class MyCustomTiptapValidationRule extends TiptapContent
@@ -98,9 +92,8 @@ class MyCustomTiptapValidationRule extends TiptapContent
 This can then be used without the need for further configuration:
 
 ```php
-MyCustomTiptapValidationRule::create(),
+MyCustomTiptapValidationRule::make(),
 ```
-</details>
 
 ### Contains Text 
 
@@ -113,9 +106,9 @@ TiptapValidation::containsText()
     ->between(12, 156) // Minimum and maximum character requirement
 ```
 
-### Configuration
+## Configuration
 
-#### Error messages
+### Error messages
 
 First publish the translation files:
 

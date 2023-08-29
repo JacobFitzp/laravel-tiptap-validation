@@ -12,14 +12,14 @@ class TiptapContentHelperTest extends TestCase
      */
     public function test_it_decodes_content(mixed $value, ?array $expected): void
     {
-        $this->assertSame($expected, TiptapContentHelper::attemptDecode($value));
+        $this->assertSame($expected, TiptapContentHelper::decode($value));
     }
 
     public static function decodesContentTestCases(): \Generator
     {
         yield [null, null];
         yield [false, null];
-        yield [26, null];
+        yield [26, [26]];
         yield ['test', null];
         yield [[], []];
         yield [['type' => 'document'], ['type' => 'document']];

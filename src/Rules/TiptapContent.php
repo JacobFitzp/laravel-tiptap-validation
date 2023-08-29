@@ -3,21 +3,27 @@
 namespace JacobFitzp\LaravelTiptapValidation\Rules;
 
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\In;
+use Illuminate\Validation\Rules\NotIn;
 use JacobFitzp\LaravelTiptapValidation\Concerns\Creatable;
+use JacobFitzp\LaravelTiptapValidation\Concerns\DecodesTiptapContent;
+use JacobFitzp\LaravelTiptapValidation\Contracts\TiptapRule;
 use JacobFitzp\LaravelTiptapValidation\Enums\TiptapValidationRuleMode;
-use JacobFitzp\LaravelTiptapValidation\Helpers\TiptapContentHelper;
 
 /**
- * Tiptap content validation rule
+ * Tiptap content validation rule.
+ *
+ * Validates that tiptap content is in the correct format and only
+ * contains nodes and marks that are allowed.
  *
  * @author Jacob Fitzpatrick <contact@jacobfitzp.me>
  */
-class TiptapContent implements ValidationRule
+class TiptapContent implements TiptapRule
 {
     use Creatable;
+    use DecodesTiptapContent;
 
     /**
      * Validation failed.
@@ -26,6 +32,8 @@ class TiptapContent implements ValidationRule
 
     /**
      * List of allowed / disallowed node types.
+     *
+     * @var string[]
      */
     protected array $nodes = [];
 
@@ -44,9 +52,9 @@ class TiptapContent implements ValidationRule
     /**
      * Nodes to blacklist / whitelist
      *
-     * @param  mixed  ...$nodes
+     * @param  string  ...$nodes
      */
-    public function nodes(...$nodes): TiptapContent
+    public function nodes(...$nodes): static
     {
         $this->nodes = $nodes;
 
@@ -56,9 +64,9 @@ class TiptapContent implements ValidationRule
     /**
      * Marks to blacklist / whitelist
      *
-     * @param  mixed  ...$marks
+     * @param  string  ...$marks
      */
-    public function marks(...$marks): TiptapContent
+    public function marks(...$marks): static
     {
         $this->marks = $marks;
 
@@ -68,7 +76,7 @@ class TiptapContent implements ValidationRule
     /**
      * Enable whitelisting mode
      */
-    public function whitelist(): TiptapContent
+    public function whitelist(): static
     {
         $this->mode = TiptapValidationRuleMode::WHITELIST;
 
@@ -78,7 +86,7 @@ class TiptapContent implements ValidationRule
     /**
      * Enable blacklisting mode
      */
-    public function blacklist(): TiptapContent
+    public function blacklist(): static
     {
         $this->mode = TiptapValidationRuleMode::BLACKLIST;
 
@@ -96,7 +104,7 @@ class TiptapContent implements ValidationRule
         }
 
         // Attempt to decode content
-        $value = TiptapContentHelper::attemptDecode($value);
+        $value = $this->decode($value);
 
         // Unable to decode content, invalid format
         if (is_null($value)) {
@@ -106,7 +114,10 @@ class TiptapContent implements ValidationRule
         }
 
         // Validate root tiptap content.
-        $validator = Validator::make($value, ['type' => 'required|string', 'content' => 'array']);
+        $validator = Validator::make($value, [
+            'type' => 'required|string',
+            'content' => 'array',
+        ]);
 
         if ($validator->fails()) {
             $fail(trans('tiptap-validation::messages.tiptapContent'));
@@ -124,7 +135,8 @@ class TiptapContent implements ValidationRule
     }
 
     /**
-     * Recursively validate nodes.
+     * Validate that a set of nodes are formatted correctly
+     * and of allowed types.
      */
     protected function validateNodes(array $nodes): bool
     {
@@ -141,16 +153,14 @@ class TiptapContent implements ValidationRule
 
         $passes = true;
 
-        // Validate nested content
+        // Validate nested nodes recursively.
         collect($nodes)
             ->each(function (array $node) use (&$passes) {
                 if (
                     filled(array_get($node, 'content')) &&
                     ! $this->validateNodes(array_get($node, 'content'))
                 ) {
-                    $passes = false;
-
-                    return false;
+                    return $passes = false;
                 }
 
                 return true;
@@ -160,9 +170,11 @@ class TiptapContent implements ValidationRule
     }
 
     /**
-     * Type validation rule
+     * Get validation rule based on the validation mode used.
+     *
+     * Either whitelist (In), or blacklist (NotIn)
      */
-    protected function typeValidationRule(array $types): mixed
+    protected function typeValidationRule(array $types): NotIn|In
     {
         return match ($this->mode) {
             TiptapValidationRuleMode::WHITELIST => Rule::in($types),

@@ -17,7 +17,7 @@ class TiptapContentTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapContent::create(),
+            'content' => TiptapContent::make(),
         ]);
 
         $this->assertSame($passes, $validator->passes());
@@ -38,7 +38,7 @@ class TiptapContentTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapContent::create()
+            'content' => TiptapContent::make()
                 ->blacklist()
                 ->nodes(...$nodes)
                 ->marks(...$marks),
@@ -55,7 +55,7 @@ class TiptapContentTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapContent::create()
+            'content' => TiptapContent::make()
                 ->whitelist()
                 ->nodes(...$nodes)
                 ->marks(...$marks),
@@ -88,7 +88,12 @@ class TiptapContentTest extends TestCase
             false,
         ];
 
-        yield [
+        yield 'Broken JSON' => [
+            '{"foo: "bar"}}',
+            false,
+        ];
+
+        yield 'Blank document' => [
             [
                 'type' => 'document',
                 'content' => [],

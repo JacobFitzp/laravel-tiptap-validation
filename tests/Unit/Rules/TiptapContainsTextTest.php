@@ -16,7 +16,7 @@ class TiptapContainsTextTest extends TestCase
         $validator = Validator::make([
             'content' => $content,
         ], [
-            'content' => TiptapContainsText::create(),
+            'content' => TiptapContainsText::make(),
         ]);
 
         $this->assertSame($passes, $validator->passes());
@@ -34,7 +34,7 @@ class TiptapContainsTextTest extends TestCase
                 ],
             ],
         ], [
-            'content' => TiptapContainsText::create()
+            'content' => TiptapContainsText::make()
                 ->minimum(5),
         ]);
 
@@ -54,7 +54,7 @@ class TiptapContainsTextTest extends TestCase
                 ],
             ],
         ], [
-            'content' => TiptapContainsText::create()
+            'content' => TiptapContainsText::make()
                 ->maximum(8),
         ]);
 
@@ -74,7 +74,7 @@ class TiptapContainsTextTest extends TestCase
                 ],
             ],
         ], [
-            'content' => TiptapContainsText::create()
+            'content' => TiptapContainsText::make()
                 ->between(2, 8),
         ]);
 
